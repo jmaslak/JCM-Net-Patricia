@@ -305,6 +305,39 @@ _match(tree, family, addr, bits)
 		}
 
 void
+_matching_prefix(tree, family, addr, bits)
+	JCM::Net::Patricia		tree
+	int				family
+	char *				addr
+	int				bits
+	PROTOTYPE: $$$$
+	PREINIT:
+	   	prefix_t prefix;
+	   	JCM__Net__PatriciaNode node;
+	PPCODE:
+		Fill_Prefix(prefix, family, addr, bits, tree->maxbits);
+		node = patricia_search_best(tree, &prefix);
+		if (NULL != node) {
+                   if (node->prefix->family == AF_INET) {
+                       XPUSHs(sv_2mortal(
+                            newSVpvf("%s/%d",
+                            inet_ntoa(node->prefix->add.sin),
+                            node->prefix->bitlen
+                        )
+                       ));
+#ifdef HAVE_IPV6
+                   } else {
+                       char buff[40]; // Longest possible IPv6
+                       inet_ntop(node->prefix->family, &node->prefix->add.sin6, buff, 40);
+                       XPUSHs(sv_2mortal(newSVpvf("%s/%d", buff, node->prefix->bitlen)));
+#endif
+                   }
+		} else {
+		   XSRETURN_UNDEF;
+		}
+
+
+void
 _exact(tree, family, addr, bits)
 	JCM::Net::Patricia			tree
 	int				family

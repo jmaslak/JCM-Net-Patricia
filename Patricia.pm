@@ -42,7 +42,7 @@ BEGIN {
   @EXPORT = qw(AF_INET AF_INET6);
 }
 
-'$Revision: 1.00 $' =~ m/(\d+)\.(\d+)((_\d+)|)/ && ( $VERSION = "$1.$2$3");
+'$Revision: 1.01 $' =~ m/(\d+)\.(\d+)((_\d+)|)/ && ( $VERSION = "$1.$2$3");
 
 bootstrap JCM::Net::Patricia $VERSION;
 
@@ -93,6 +93,12 @@ sub match_string {
   croak "match_string: wrong number of args" if (@_ != 2);
   my ($self,$str) = @_;
   $self->match($self->_ip_bits($str))
+}
+
+sub matching_prefix_string {
+  croak "matching_prefix_string: wrong number of args" if (@_ != 2);
+  my ($self,$str) = @_;
+  $self->matching_prefix($self->_ip_bits($str))
 }
 
 sub match_exact_string {
@@ -190,6 +196,13 @@ sub match_integer {
   $self->SUPER::_match(AF_INET, pack("N",$num), $bits);
 }
 
+sub matching_prefix_integer {
+  croak "matching_integer: wrong number of args" if (@_ < 2 || @_ > 3);
+  my ($self, $num, $bits) = @_;
+  $bits = 32 if (@_ < 3);
+  $self->SUPER::_matching_prefix(AF_INET, pack("N",$num), $bits);
+}
+
 sub exact_integer {
   croak "exact_integer: wrong number of args" if (@_ < 2 || @_ > 3);
   my ($self, $num, $bits) = @_;
@@ -204,6 +217,15 @@ sub match {
   croak("invalid key") unless (defined $packed);
   $bits = 32 if (@_ < 3);
   $self->SUPER::_match(AF_INET, $packed, $bits);
+}
+
+sub matching_prefix {
+  croak "matching_prefix: wrong number of args" if (@_ < 2 || @_ > 3);
+  my ($self, $ip, $bits) = @_;
+  my $packed = inet_aton($ip);
+  croak("invalid key") unless (defined $packed);
+  $bits = 32 if (@_ < 3);
+  $self->SUPER::_matching_prefix(AF_INET, $packed, $bits);
 }
 
 sub exact {
@@ -277,6 +299,13 @@ sub match_integer {
   $self->SUPER::_match(AF_INET6, pack("N",$num), $bits);
 }
 
+sub matching_prefix_integer {
+  croak "matching_prefix_integer: wrong number of args" if (@_ < 2 || @_ > 3);
+  my ($self, $num, $bits) = @_;
+  $bits = 128 if (@_ < 3);
+  $self->SUPER::_matching_prefix(AF_INET6, pack("N",$num), $bits);
+}
+
 sub exact_integer {
   croak "exact_integer: wrong number of args" if (@_ < 2 || @_ > 3);
   my ($self, $num, $bits) = @_;
@@ -291,6 +320,15 @@ sub match {
   croak("invalid key") unless (defined $packed);
   $bits = 128 if (@_ < 3);
   $self->SUPER::_match(AF_INET6, $packed, $bits);
+}
+
+sub matching_prefix {
+  croak "matching_prefix: wrong number of args" if (@_ < 2 || @_ > 3);
+  my ($self, $ip, $bits) = @_;
+  my $packed = inet_pton(AF_INET6, $ip);
+  croak("invalid key") unless (defined $packed);
+  $bits = 128 if (@_ < 3);
+  $self->SUPER::_matching_prefix(AF_INET6, $packed, $bits);
 }
 
 sub exact {
@@ -436,6 +474,24 @@ addresses.
 If a matching node is found in the Patricia Trie, this method returns
 the user data for the node.  This method returns undef on failure.
 
+=item B<matching_prefix_string>
+
+  $pt->matching_prefix_string(key_string);
+
+This method searches the Patricia Trie to find a matching node,
+according to normal subnetting rules for the address and mask
+specified. It follwows the same rules as the C<match_string()> method.
+
+The key_string argument is a network or subnet specification in
+canonical form, e.g. "10.0.0.0/8", where the number after the slash
+represents the number of bits in the netmask.  If no mask width value
+is specified, the longest mask is assumed, i.e. 32 bits for AF_INET
+addresses.
+
+If a matching node is found in the Patricia Trie, this method returns
+a string representation of the prefix and length in CIDR notation for
+the node.  This method returns undef on failure.
+
 =item B<match_exact_string>
 
   $pt->match_exact_string(key_string);
@@ -454,6 +510,24 @@ This method searches the Patricia Trie to find a matching node,
 according to normal subnetting rules for the address and mask
 specified.  Its semantics are similar to those described for
 C<match_string> except that the key is specified using an integer
+(i.e.  SCALAR), such as that returned by perl's C<unpack> function for
+values converted using the "N" (network-ordered long).  Note that this
+argument is not a packed network-ordered long.
+
+Just to be completely clear, the integer argument should be a value of
+the sort produced by this code:
+
+   use Socket;
+   $integer = unpack("N", inet_aton("10.0.0.0"));
+
+=item B<matching_prefix_integer>
+
+  $pt->match_integer(integer[,mask_bits]);
+
+This method searches the Patricia Trie to find a matching node,
+according to normal subnetting rules for the address and mask
+specified.  Its semantics are similar to those described for
+C<matching_prefix_string> except that the key is specified using an integer
 (i.e.  SCALAR), such as that returned by perl's C<unpack> function for
 values converted using the "N" (network-ordered long).  Note that this
 argument is not a packed network-ordered long.

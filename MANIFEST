@@ -17,6 +17,7 @@ MYMETA.yml
 README
 t/01everything.t
 t/02climb.t
+t/03matching_prefix.t
 typemap
 MYMETA.yml                               Module YAML meta-data (added by MakeMaker)
 MYMETA.json                              Module JSON meta-data (added by MakeMaker)
