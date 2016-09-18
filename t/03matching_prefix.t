@@ -63,5 +63,12 @@ foreach my $test (@tests) {
     is( $result, $test->[1], $test->[0] . ' lookup' );
 }
 
+# Validate null matches
+$pt = new JCM::Net::Patricia;
+my $result = $pt->matching_prefix_string('192.0.2.1');
+is( $result, undef, 'Null match returns undef (1)' );
+$result = $pt->match_string('192.0.2.1');
+is( $result, undef, 'Null match returns undef (2)' );
+
 done_testing;
 
