@@ -8,7 +8,7 @@ WriteMakefile(
     'AUTHOR'	=> 'Joel Maslak <jmaslak@antelope.net>',
     'LICENSE'	=> 'gpl_2',
     'VERSION_FROM' => 'Patricia.pm', # finds $VERSION
-    'LIBS'	=> ['-lnsl'],   # e.g., '-lm' 
+    'LIBS'	=> [],     # e.g., '-lm' 
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '',     # e.g., '-I/usr/include/other' 
     'MYEXTLIB'	=> 'libpatricia/libpatricia$(LIB_EXT)',     # e.g., '-I/usr/include/other' 
