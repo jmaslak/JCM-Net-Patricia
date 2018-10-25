@@ -21,7 +21,7 @@ WriteMakefile(
     'META_MERGE' => {
         'meta-spec' => { version => 2 },
         resources   => {
-            respoistory => {
+            repository => {
                 type => 'git',
                 url  => 'git://git@github.com/jmaslak/JCM-Net-Patricia.git',
                 web  => 'https://github.com/jmaslak/JCM-Net-Patricia',
