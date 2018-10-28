@@ -1,5 +1,8 @@
 Revision history for Perl extension JCM::Net::Patricia.
 
+???
+    - Merged documentation formatting change from Mohammad S Anwar
+
 1.04 - 2018-10-28  Joelle Maslak <jmaslak@antelope.net>
     - Merged documentation and metadata changes from Dylan Hardison
     - Additional author name updates
