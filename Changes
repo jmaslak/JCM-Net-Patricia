@@ -1,5 +1,14 @@
 Revision history for Perl extension JCM::Net::Patricia.
 
+1.03 - 2017-09-15  Joelle Maslak <jmaslak@antelope.net>
+    - Update author name
+    - No functional changes
+
+1.02 - 2016-09-17  Joelle Maslak <jmaslak@antelope.net>
+    - Fixed test_dynamic not found issue on *BSD
+    - Slightly reorganized directory structure
+    - Added test for null results
+
 1.01 - 2015-09-04  Joelle Maslak <jmaslak@antelope.net>
     - Added matching_prefix_string() and matching_prefix_integer()
       methods that function similar to match_string() and
