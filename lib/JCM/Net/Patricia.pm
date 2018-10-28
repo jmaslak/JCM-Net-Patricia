@@ -671,7 +671,7 @@ in turn owes something to the BSD kernel.
 
 =head1 SEE ALSO
 
-perl(1), Socket, Net::Netmask, Net::Patricia Text::Trie, Tree::Trie.
+L<perl(1)>, L<Socket>, L<Net::Netmask>, L<Net::Patricia>, L<Text::Trie>, L<Tree::Trie>.
 
 Tree::Radix and Net::RoutingTable are modules by Daniel Hagerty
 <hag@linnaean.org> written entirely in perl, unlike this module.  At
